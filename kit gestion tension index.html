@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kit Anti-Tension - Guide Pratique</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0e6f4 0%, #e6f0f4 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #9CB4C5 0%, #7A9BB5 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.95;
+            font-size: 1.1em;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 15px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #F8B4A8 0%, #FFCDB2 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5a4a42;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .welcome-screen {
+            text-align: center;
+        }
+
+        .welcome-screen h2 {
+            color: #7A9BB5;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .welcome-screen p {
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #F8B4A8 0%, #E8A598 100%);
+            color: #5a4a42;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(248, 180, 168, 0.4);
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(248, 180, 168, 0.6);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .level-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border-left: 5px solid #F8B4A8;
+        }
+
+        #level1 .level-card {
+            background: linear-gradient(135deg, #fce4e4 0%, #fff 100%);
+            border-left-color: #E8A598;
+        }
+
+        #level2 .level-card {
+            background: linear-gradient(135deg, #e4f0f8 0%, #fff 100%);
+            border-left-color: #9CB4C5;
+        }
+
+        #level3 .level-card {
+            background: linear-gradient(135deg, #e4f8ec 0%, #fff 100%);
+            border-left-color: #A8D5BA;
+        }
+
+        #level4 .level-card {
+            background: linear-gradient(135deg, #fef6e4 0%, #fff 100%);
+            border-left-color: #F5D89A;
+        }
+
+        #level5 .level-card {
+            background: linear-gradient(135deg, #f0e4f8 0%, #fff 100%);
+            border-left-color: #C4A8D5;
+        }
+
+        .module-icon {
+            font-size: 3em;
+            text-align: center;
+            margin: 20px 0;
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.1));
+        }
+
+        .level-card h3 {
+            color: #7A9BB5;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .level-number {
+            background: linear-gradient(135deg, #F8B4A8 0%, #E8A598 100%);
+            color: #5a4a42;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .quiz-option {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-option:hover:not(.disabled) {
+            border-color: #F8B4A8;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: #e4f8ec;
+            border-color: #A8D5BA;
+            cursor: default;
+        }
+
+        .quiz-option.incorrect {
+            background: #fce4e4;
+            border-color: #E8A598;
+            cursor: default;
+        }
+
+        .quiz-option.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .feedback.success {
+            background: #e4f8ec;
+            color: #2d5a3d;
+            border: 2px solid #A8D5BA;
+        }
+
+        .feedback.error {
+            background: #fce4e4;
+            color: #5a3d3d;
+            border: 2px solid #E8A598;
+        }
+
+        .drag-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .drag-items, .drop-zones {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .drag-item {
+            background: white;
+            border: 2px solid #9CB4C5;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 8px 0;
+            cursor: move;
+            transition: all 0.3s;
+        }
+
+        .drag-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .drop-zone {
+            background: white;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 8px 0;
+            min-height: 60px;
+            transition: all 0.3s;
+        }
+
+        .drop-zone.drag-over {
+            background: #e4f0f8;
+            border-color: #9CB4C5;
+        }
+
+        .drop-zone.filled {
+            border-style: solid;
+            border-color: #A8D5BA;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #F5D89A 0%, #F8E4B8 100%);
+            color: #5a4a42;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 10px;
+            box-shadow: 0 4px 10px rgba(245, 216, 154, 0.4);
+        }
+
+        .certificate {
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            border: 5px solid #F5D89A;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .certificate h2 {
+            color: #7A9BB5;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .certificate-badge {
+            font-size: 4em;
+            margin: 20px 0;
+        }
+
+        .input-group {
+            margin: 15px 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #7A9BB5;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #9CB4C5;
+        }
+
+        .checklist {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .checklist-item:hover {
+            background: #e9ecef;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+            accent-color: #9CB4C5;
+        }
+
+        .checklist-item label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.5em;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .drag-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Kit Pratique : Gérer les Tensions en Classe</h1>
+            <p>Un parcours interactif pour enseignants afin de développer tes compétences communicationnelles</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%">
+                    <span id="progressText">0%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Écran d'accueil -->
+            <div id="welcome" class="screen active">
+                <div class="welcome-screen">
+                    <h2>Bienvenue !</h2>
+                    <p>Ce parcours interactif te propose de revisiter les fondamentaux de la communication en situation de tension.</p>
+                    <p>L'objectif ? Repartir avec des outils directement utilisables dès lundi matin dans ta classe.</p>
+                    <button class="btn" onclick="startJourney()">Commencer le parcours</button>
+                </div>
+            </div>
+
+            <!-- Niveau 1 : Le Principe Fondamental -->
+            <div id="level1" class="screen">
+                <div class="level-card">
+                    <div class="module-icon">🗣️💭</div>
+                    <h3><span class="level-number">1</span> Le Principe Fondamental</h3>
+                    <p>Il existe un principe de base en communication qui change complètement notre façon de voir les interactions en classe. Une fois qu'on l'a compris, on ne voit plus les situations de la même manière.</p>
+                    
+                    <div style="margin: 30px 0;">
+                        <h4 style="color: #7A9BB5; margin-bottom: 15px;">Quel est CE principe fondamental de la communication ?</h4>
+                        <div class="quiz-option" onclick="checkAnswer(1, this, false)">
+                            La communication doit toujours être claire et directe
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(1, this, true)">
+                            On ne peut pas ne pas communiquer
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(1, this, false)">
+                            La communication verbale prime sur le non-verbal
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(1, this, false)">
+                            Il faut toujours éviter les conflits
+                        </div>
+                    </div>
+
+                    <div id="feedback1" class="feedback"></div>
+                    <button id="btn1" class="btn" style="display:none;" onclick="goToLevel(2)">Outil suivant →</button>
+                </div>
+            </div>
+
+            <!-- Niveau 2 : Formuler en JE -->
+            <div id="level2" class="screen">
+                <div class="level-card">
+                    <div class="module-icon">💬🎯</div>
+                    <h3><span class="level-number">2</span> Parler en "JE" plutôt qu'en "TU"</h3>
+                    <p>Quand on dit "TU es insupportable", on attaque la personne et on ferme le dialogue. Quand on dit "J'ai besoin de calme", on exprime un besoin légitime sans juger.</p>
+                    <p><strong>Pourquoi c'est important ?</strong> Parce que le message en "JE" préserve la relation et l'estime de soi de l'élève, tout en posant clairement nos limites. L'élève ne se sent pas attaqué et peut donc entendre notre demande.</p>
+                    <p><strong>Exercice :</strong> Transforme ces 3 phrases accusatrices en messages qui expriment ton besoin :</p>
+                    
+                    <div style="margin: 30px 0;">
+                        <div class="input-group">
+                            <label>❌ "Tu es insupportable avec ton bavardage !"<br>
+                            ✅ Version "JE" :</label>
+                            <input type="text" id="answer1" placeholder="J'ai besoin de...">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>❌ "T'es toujours en retard !"<br>
+                            ✅ Version "JE" :</label>
+                            <input type="text" id="answer2" placeholder="Je compte sur...">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>❌ "Tu ne fais jamais ton travail !"<br>
+                            ✅ Version "JE" :</label>
+                            <input type="text" id="answer3" placeholder="J'attends que...">
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="checkLevel2()">Valider</button>
+                    <div id="feedback2" class="feedback"></div>
+                    <button id="btn2" class="btn" style="display:none; margin-top: 10px;" onclick="goToLevel(3)">Outil suivant →</button>
+                </div>
+            </div>
+
+            <!-- Niveau 3 : L'échelle -->
+            <div id="level3" class="screen">
+                <div class="level-card">
+                    <div class="module-icon">📊⬆️</div>
+                    <h3><span class="level-number">3</span> L'Échelle d'Intervention</h3>
+                    <p>Tu as 9 niveaux d'action possibles avant d'en arriver aux mesures extrêmes. Le secret ? <strong>Intervenir tôt et léger</strong> pour éviter d'avoir à monter trop haut dans l'échelle.</p>
+                    <p><strong>Exercice :</strong> Classe ces 5 interventions de la moins intense à la plus intense :</p>
+                    
+                    <div class="drag-container">
+                        <div class="drag-items">
+                            <h4>Glisse ces cartes →</h4>
+                            <div class="drag-item" draggable="true" data-position="1">
+                                👁️ Observer sans rien dire
+                            </div>
+                            <div class="drag-item" draggable="true" data-position="3">
+                                💬 Dire clairement : "J'observe... j'ai besoin... je demande..."
+                            </div>
+                            <div class="drag-item" draggable="true" data-position="5">
+                                🤝 Faire intervenir l'équipe éducative
+                            </div>
+                            <div class="drag-item" draggable="true" data-position="2">
+                                📢 Rappeler la règle à toute la classe
+                            </div>
+                            <div class="drag-item" draggable="true" data-position="4">
+                                🪑 Changer l'élève de place
+                            </div>
+                        </div>
+                        
+                        <div class="drop-zones">
+                            <h4>Dans l'ordre :</h4>
+                            <div class="drop-zone" data-order="1">1. Légère</div>
+                            <div class="drop-zone" data-order="2">2.</div>
+                            <div class="drop-zone" data-order="3">3.</div>
+                            <div class="drop-zone" data-order="4">4.</div>
+                            <div class="drop-zone" data-order="5">5. Forte</div>
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="checkLevel3()">Vérifier</button>
+                    <div id="feedback3" class="feedback"></div>
+                    <button id="btn3" class="btn" style="display:none; margin-top: 10px;" onclick="goToLevel(4)">Outil suivant →</button>
+                </div>
+            </div>
+
+            <!-- Niveau 4 : Écoute Active -->
+            <div id="level4" class="screen">
+                <div class="level-card">
+                    <div class="module-icon">👂💙</div>
+                    <h3><span class="level-number">4</span> L'Écoute Active</h3>
+                    <p>L'écoute active, ce n'est pas juste "écouter en silence". C'est une technique de communication qui consiste à :</p>
+                    <ul style="margin: 15px 0; padding-left: 25px; line-height: 1.8;">
+                        <li><strong>Reformuler</strong> ce que l'élève dit pour montrer qu'on a vraiment entendu</li>
+                        <li><strong>Reconnaître l'émotion</strong> sans la juger (empathie)</li>
+                        <li><strong>Poser une question ouverte</strong> pour inviter l'élève à développer et à trouver ses propres solutions</li>
+                    </ul>
+                    <p>Cette approche désamorce les tensions car l'élève se sent écouté et compris.</p>
+                    
+                    <p style="font-style: italic; padding: 15px; background: white; border-left: 4px solid #F8B4A8; margin: 20px 0;">
+                        <strong>Un élève te dit :</strong><br>
+                        "C'est toujours moi qu'on accuse ! C'est vraiment injuste !"
+                    </p>
+                    
+                    <p><strong>Quelle est la meilleure réponse ?</strong></p>
+                    
+                    <div style="margin: 30px 0;">
+                        <div class="quiz-option" onclick="checkAnswer(4, this, false)">
+                            "Arrête de te plaindre, si on t'accuse c'est qu'il y a une raison."
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(4, this, false)">
+                            "C'est faux, je suis toujours juste avec tout le monde."
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(4, this, true)">
+                            "Tu as le sentiment que c'est injuste. Qu'est-ce qui s'est passé exactement ?"
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(4, this, false)">
+                            "Bon, et alors ? Qu'est-ce que tu veux que j'y fasse ?"
+                        </div>
+                    </div>
+
+                    <div id="feedback4" class="feedback"></div>
+                    <button id="btn4" class="btn" style="display:none;" onclick="goToLevel(5)">Dernier outil →</button>
+                </div>
+            </div>
+
+            <!-- Niveau 5 : Boîte à Outils -->
+            <div id="level5" class="screen">
+                <div class="level-card">
+                    <div class="module-icon">🛠️✅</div>
+                    <h3><span class="level-number">5</span> Ta Check-List Avant d'Intervenir</h3>
+                    <p>Avant de réagir dans une situation tendue, prends 30 secondes pour vérifier ces 5 points mentalement. Ça change tout !</p>
+                    <p><strong>Coche chaque point</strong> pour bien les ancrer :</p>
+                    
+                    <div class="checklist">
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check1">
+                            <label for="check1">✓ J'ai pris du recul : l'élève et moi avons chacun notre version de la situation</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check2">
+                            <label for="check2">✓ Je vais parler en "JE" pour exprimer mon besoin, pas juger l'élève</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check3">
+                            <label for="check3">✓ Je contrôle ma voix (ton, débit) et mon corps (posture ouverte, regard calme)</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check4">
+                            <label for="check4">✓ Je me situe sur l'échelle : ai-je d'abord essayé les interventions légères ?</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check5">
+                            <label for="check5">✓ Mon but est de résoudre le problème, pas de gagner ou de punir</label>
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="completeJourney()">Terminer</button>
+                </div>
+            </div>
+
+            <!-- Écran final -->
+            <div id="final" class="screen">
+                <div class="certificate">
+                    <div class="certificate-badge">🎓</div>
+                    <h2>Parcours Terminé !</h2>
+                    <p style="font-size: 1.2em; margin: 20px 0;">Tu as maintenant 5 outils concrets dans ta boîte.</p>
+                    
+                    <div class="score-display">
+                        <strong>Tes outils :</strong><br>
+                        <span class="badge">✓ Le Principe de Base</span>
+                        <span class="badge">✓ Parler en "JE"</span>
+                        <span class="badge">✓ L'Échelle</span>
+                        <span class="badge">✓ Écoute Active</span>
+                        <span class="badge">✓ Check-List</span>
+                    </div>
+
+                    <p style="margin: 30px 0; font-size: 1.1em; color: #555;">
+                        Ces outils vont devenir des automatismes avec la pratique. N'hésite pas à refaire ce parcours pour les ancrer !
+                    </p>
+
+                    <button class="btn" onclick="restartJourney()">🔄 Refaire le parcours</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentLevel = 0;
+        let completedLevels = 0;
+        let quizAnswered = {};
+
+        function startJourney() {
+            goToLevel(1);
+        }
+
+        function goToLevel(level) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(`level${level}`).classList.add('active');
+            currentLevel = level;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = (completedLevels / 5) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = Math.round(progress) + '%';
+        }
+
+        function checkAnswer(levelNum, element, isCorrect) {
+            if (quizAnswered[levelNum]) return;
+            
+            const parentDiv = element.parentElement;
+            const allOptions = parentDiv.querySelectorAll('.quiz-option');
+            
+            allOptions.forEach(opt => opt.classList.add('disabled'));
+            element.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+            const feedback = document.getElementById(`feedback${levelNum}`);
+            
+            if (isCorrect) {
+                quizAnswered[levelNum] = true;
+                feedback.className = 'feedback success show';
+                
+                if (levelNum === 1) {
+                    feedback.innerHTML = `✅ <strong>Exact !</strong> "On ne peut pas ne pas communiquer" signifie que même quand tu ne dis rien, tu communiques quelque chose. Un silence, un regard détourné, une posture fermée... tout envoie un message. C'est pour ça qu'être conscient de ton non-verbal et de tes attitudes est crucial en classe.`;
+                } else if (levelNum === 4) {
+                    feedback.innerHTML = `✅ <strong>Parfait !</strong> Cette réponse combine :<br>
+                    • Reformulation : "Tu as le sentiment..." → tu montres que tu écoutes<br>
+                    • Empathie : tu reconnais son émotion<br>
+                    • Question ouverte : "Qu'est-ce qui s'est passé ?" → tu l'invites à s'expliquer<br><br>
+                    Avec ça, l'élève se sent entendu et va s'ouvrir au dialogue.`;
+                }
+                
+                document.getElementById(`btn${levelNum}`).style.display = 'inline-block';
+                completedLevels = Math.max(completedLevels, levelNum);
+                updateProgress();
+                
+                allOptions.forEach(opt => {
+                    opt.style.cursor = 'default';
+                    opt.onclick = null;
+                });
+                
+            } else {
+                feedback.className = 'feedback error show';
+                
+                if (levelNum === 1) {
+                    feedback.innerHTML = '❌ Pas tout à fait. Réfléchis : que se passe-t-il quand tu restes silencieux face à un élève ? Ton silence communique déjà quelque chose (accord ? désintérêt ? réflexion ?). Réessaie !';
+                } else if (levelNum === 4) {
+                    feedback.innerHTML = '❌ Cette réponse ferme le dialogue. L\'écoute active = reformuler + montrer de l\'empathie + question ouverte. Réessaie !';
+                }
+                
+                setTimeout(() => {
+                    element.classList.remove('incorrect');
+                    allOptions.forEach(opt => opt.classList.remove('disabled'));
+                    feedback.classList.remove('show');
+                }, 2500);
+            }
+        }
+
+        function checkLevel2() {
+            const answer1 = document.getElementById('answer1').value.toLowerCase().trim();
+            const answer2 = document.getElementById('answer2').value.toLowerCase().trim();
+            const answer3 = document.getElementById('answer3').value.toLowerCase().trim();
+
+            if (!answer1 || !answer2 || !answer3) {
+                const feedback = document.getElementById('feedback2');
+                feedback.className = 'feedback error show';
+                feedback.innerHTML = '⚠️ Remplis les trois champs avant de valider.';
+                return;
+            }
+
+            const hasJe1 = answer1.includes('j\'') || answer1.includes('je') || answer1.includes('besoin') || answer1.includes('calme');
+            const hasJe2 = answer2.includes('j\'') || answer2.includes('je') || answer2.includes('besoin') || answer2.includes('ponctualité') || answer2.includes('compte');
+            const hasJe3 = answer3.includes('j\'') || answer3.includes('je') || answer3.includes('attends') || answer3.includes('besoin');
+
+            const feedback = document.getElementById('feedback2');
+            
+            if (hasJe1 && hasJe2 && hasJe3) {
+                feedback.className = 'feedback success show';
+                feedback.innerHTML = `✅ <strong>Très bien !</strong> Exemples de formulations en "JE" :<br>
+                • "J'ai besoin de calme pour enseigner"<br>
+                • "Je compte sur ta ponctualité"<br>
+                • "J'attends que tu rendes ton travail"<br><br>
+                Tu exprimes ton besoin sans attaquer l'élève. C'est ça la clé !`;
+                document.getElementById('btn2').style.display = 'inline-block';
+                completedLevels = Math.max(completedLevels, 2);
+                updateProgress();
+            } else {
+                feedback.className = 'feedback error show';
+                feedback.innerHTML = `💡 Dans le registre "JE", on exprime ce qu'on ressent ou ce dont on a besoin.<br>
+                Essaie : "J'ai besoin de...", "Je compte sur...", "J'attends que..."<br><br>
+                <em>Modifie et revalide !</em>`;
+            }
+        }
+
+        // Drag and drop
+        let draggedElement = null;
+        const dropZones = document.querySelectorAll('.drop-zone');
+        const dragItems = document.querySelectorAll('.drag-item');
+
+        dragItems.forEach(item => {
+            item.addEventListener('dragstart', function(e) {
+                draggedElement = this;
+                setTimeout(() => this.style.opacity = '0.5', 0);
+            });
+
+            item.addEventListener('dragend', function() {
+                setTimeout(() => this.style.opacity = '1', 0);
+                draggedElement = null;
+            });
+        });
+
+        dropZones.forEach(zone => {
+            zone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('drag-over');
+            });
+
+            zone.addEventListener('dragleave', function() {
+                this.classList.remove('drag-over');
+            });
+
+            zone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                
+                if (draggedElement) {
+                    if (this.children.length > 1) {
+                        const existingItem = this.querySelector('.drag-item');
+                        document.querySelector('.drag-items').appendChild(existingItem);
+                    }
+                    
+                    this.appendChild(draggedElement);
+                    this.classList.add('filled');
+                }
+            });
+        });
+
+        function checkLevel3() {
+            let correct = 0;
+            const zones = document.querySelectorAll('.drop-zone');
+            let allFilled = true;
+            
+            zones.forEach(zone => {
+                const item = zone.querySelector('.drag-item');
+                if (!item) {
+                    allFilled = false;
+                    return;
+                }
+                const expectedPos = zone.dataset.order;
+                const actualPos = item.dataset.position;
+                if (expectedPos === actualPos) {
+                    correct++;
+                }
+            });
+
+            const feedback = document.getElementById('feedback3');
+            
+            if (!allFilled) {
+                feedback.className = 'feedback error show';
+                feedback.innerHTML = '⚠️ Place les 5 cartes dans les zones avant de vérifier.';
+                return;
+            }
+            
+            if (correct === 5) {
+                feedback.className = 'feedback success show';
+                feedback.innerHTML = `✅ <strong>Parfait !</strong> Tu as bien compris l'échelle :<br>
+                1. Observer discrètement<br>
+                2. Rappel collectif de la règle<br>
+                3. Explicitation claire : "J'observe... j'ai besoin..."<br>
+                4. Action concrète : changement de place<br>
+                5. Intervention d'équipe<br><br>
+                💡 Plus tu interviens tôt (1-3), moins tu as besoin d'escalader !`;
+                document.getElementById('btn3').style.display = 'inline-block';
+                completedLevels = Math.max(completedLevels, 3);
+                updateProgress();
+            } else {
+                feedback.className = 'feedback error show';
+                feedback.innerHTML = `🔍 ${correct}/5 bonnes positions.<br>
+                Pense à l'intensité :<br>
+                • Observer = très discret<br>
+                • Rappel collectif = on parle au groupe<br>
+                • Explicitation = on pose clairement ses limites<br>
+                • Changement de place = action physique<br>
+                • Équipe = on sort du face-à-face<br><br>
+                <em>Réorganise et réessaie !</em>`;
+            }
+        }
+
+        function completeJourney() {
+            const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+            const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const totalCount = checkboxes.length;
+            
+            if (checkedCount === totalCount) {
+                completedLevels = 5;
+                updateProgress();
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                document.getElementById('final').classList.add('active');
+            } else {
+                const existingAlert = document.querySelector('.checklist-alert');
+                if (existingAlert) existingAlert.remove();
+                
+                const alert = document.createElement('div');
+                alert.className = 'feedback error show checklist-alert';
+                alert.innerHTML = `⚠️ Tu as coché ${checkedCount}/${totalCount} points.<br>
+                <strong>Coche-les tous pour terminer !</strong><br>
+                <em>Ces 5 réflexes sont essentiels avant toute intervention.</em>`;
+                
+                document.querySelector('.checklist').insertAdjacentElement('afterend', alert);
+                alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function restartJourney() {
+            completedLevels = 0;
+            currentLevel = 0;
+            quizAnswered = {};
+            updateProgress();
+            
+            document.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('correct', 'incorrect', 'disabled');
+                opt.style.cursor = 'pointer';
+                const levelNum = opt.closest('[id^="level"]').id.replace('level', '');
+                opt.onclick = function() { 
+                    const isCorrect = opt.textContent.includes('ne peut pas ne pas') || 
+                                     opt.textContent.includes('Tu as le sentiment');
+                    checkAnswer(parseInt(levelNum), this, isCorrect); 
+                };
+            });
+            
+            document.querySelectorAll('.feedback').forEach(f => {
+                f.classList.remove('show', 'success', 'error');
+                f.innerHTML = '';
+            });
+            
+            document.querySelectorAll('[id^="btn"]').forEach(btn => btn.style.display = 'none');
+            
+            const dragItemsContainer = document.querySelector('.drag-items');
+            if (dragItemsContainer) {
+                document.querySelectorAll('.drop-zone .drag-item').forEach(item => {
+                    dragItemsContainer.appendChild(item);
+                });
+                document.querySelectorAll('.drop-zone').forEach(zone => {
+                    zone.classList.remove('filled', 'drag-over');
+                });
+            }
+            
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('welcome').classList.add('active');
+        }
+    </script>
+</body>
+</html>
